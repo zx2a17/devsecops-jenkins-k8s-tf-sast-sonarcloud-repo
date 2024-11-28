@@ -28,7 +28,7 @@ pipeline {
             }
     }
 
-   stage('Push') {
+       stage('Push') {
             steps {
                 script{
                     docker.withRegistry('https://301809677250.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:aws-credentials') {
@@ -37,6 +37,16 @@ pipeline {
                 }
             }
     	}
+
+	   
+	stage('Kubernetes Deployment of Buggy Web Application') {
+	   steps {
+	      withKubeConfig([credentialsId: 'kubelogin']) {
+		  sh('kubectl delete all --all -n devsecops')
+		  sh ('kubectl apply -f deployment.yaml --namespace=devsecops')
+		}
+	      }
+   	}
 	    
 
   
